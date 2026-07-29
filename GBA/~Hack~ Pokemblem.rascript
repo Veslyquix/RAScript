@@ -135,6 +135,7 @@ CharName1 = dword(0x33d10) // to check special modes
 CharName2 = dword(0x033d14)
 RNGSeed = dword(0x477c4)
 
+FaintsCounter = word(0x48050)
 CheatFlagSave1 = byte(0x48054)
 CheatFlagSave2 = byte(0x48058)
 CheatFlagSave3 = byte(0x4805c)
@@ -214,7 +215,7 @@ function LoadCheck() => MapID == prev(MapID) && MusicID != 0
 function DebugProtect() => DebuggerFlag == 1 && CheatFlagSave1 != 1 && CheatFlagSave2 != 1 && CheatFlagSave3 != 1 
 function NoRandoNoChallengeRun() => WildPkmnRando == 0 && CantCapture == 0 && CantEvolve == 0 && SkillRando == 0 && StatRando == 0 && ItemRando == 0 && GrowthRando == 0 && BossRando == 0 && TrainerRando == 0 && MoveRando == 0 && CharName1 != 0x006b614f && (CharName1 != 0x6c736556 && CharName2 != 0x00000079)
 function PokedexCount() => bitcount(0x47708) - bit0(0x47708) + bitcount(0x47709) + bit0(0x4770a) + bit1(0x4770a) + bit2(0x4770a) + bit7(0x4770a) + bitcount(0x4770b) + bitcount(0x4770c) + bitcount(0x4770d) + bitcount(0x4770e) - bit4(0x4770e) + bitcount(0x4770f) + bitcount(0x47710) + bitcount(0x47711) + bitcount(0x47712) - bit1(0x47712) + bitcount(0x47713) - bit7(0x47713) + bitcount(0x47718) + bitcount(0x47719) + bitcount(0x4771a) + bitcount(0x4771b) + bitcount(0x4771c) + bitcount(0x4771d) + bitcount(0x4771e) + bitcount(0x4771f) - bit7(0x4771f)
-
+function FaintsCount() => ((FaintsCounter+1) & 0xFFFF)
 function PokedexCheck(target) => PokedexCount() == target
                               && prev(PokedexCount()) == target - 1
 
@@ -858,172 +859,196 @@ function ChallengeFullChaos() => WildPkmnRando == 1 && SkillRando == 1 && StatRa
 
 // ---- Rich Presence Display ----
 rich_presence_conditional_display(NoRandoNoChallengeRun() && DebugProtect() && FemaleChar == 0 && LunaticDifficulty == 1,
-    "• Red is in {0} • Pokédex: {1}/151 • RNG Seed: {2} • Lunatic •",
+    "• Red is in {0} • Pokédex: {1}/151 • Faints: {2} • Lunatic • RNG Seed: {3} •",
     rich_presence_lookup("MapID", MapID, RPMapID),
     rich_presence_value("Dex", PokedexCount()),
+    rich_presence_value("Faints", FaintsCount()),
     rich_presence_value("Seed", RNGSeed)
 )
 
 rich_presence_conditional_display(NoRandoNoChallengeRun() && DebugProtect() && FemaleChar == 1 && LunaticDifficulty == 1,
-    "• Leaf is in {0} • Pokédex: {1}/151 • RNG Seed: {2} • Lunatic •",
+    "• Leaf is in {0} • Pokédex: {1}/151 • Faints: {2} • Lunatic • RNG Seed: {3} •",
     rich_presence_lookup("MapID", MapID, RPMapID),
     rich_presence_value("Dex", PokedexCount()),
+    rich_presence_value("Faints", FaintsCount()),
     rich_presence_value("Seed", RNGSeed)
 )
 
 
 rich_presence_conditional_display(NoRandoNoChallengeRun() && DebugProtect() && FemaleChar == 0,
-    "• Red is in {0} • Pokédex: {1}/151 • RNG Seed: {2} •",
+    "• Red is in {0} • Pokédex: {1}/151 • Faints: {2} • RNG Seed: {3} •",
     rich_presence_lookup("MapID", MapID, RPMapID),
     rich_presence_value("Dex", PokedexCount()),
+    rich_presence_value("Faints", FaintsCount()),
     rich_presence_value("Seed", RNGSeed)
 )
 
 rich_presence_conditional_display(NoRandoNoChallengeRun() && DebugProtect() && FemaleChar == 1,
-    "• Leaf is in {0} • Pokédex: {1}/151 • RNG Seed: {2} •",
+    "• Leaf is in {0} • Pokédex: {1}/151 • Faints: {2} • RNG Seed: {3} •",
     rich_presence_lookup("MapID", MapID, RPMapID),
     rich_presence_value("Dex", PokedexCount()),
+    rich_presence_value("Faints", FaintsCount()),
     rich_presence_value("Seed", RNGSeed)
 )
 
 
 rich_presence_conditional_display(DebugProtect() && ChallengeAsh(),
-    "• Challenger Ash is in {0} • Pokédex: {1}/151 • RNG Seed: {2} • !! SUBSET ACHIEVEMENTS ONLY !! •",
+    "• Challenger Ash is in {0} • Pokédex: {1}/151 • Faints: {2} • RNG Seed: {3} • !! SUBSET ACHIEVEMENTS ONLY !! •",
     rich_presence_lookup("MapID", MapID, RPMapID),
     rich_presence_value("Dex", PokedexCount()),
+    rich_presence_value("Faints", FaintsCount()),
     rich_presence_value("Seed", RNGSeed)
 )
 
 rich_presence_conditional_display(DebugProtect() && ChallengeGary(),
-    "• Challenger Gary is in {0} • Pokédex: {1}/151 • RNG Seed: {2} • !! SUBSET ACHIEVEMENTS ONLY !! •",
+    "• Challenger Gary is in {0} • Pokédex: {1}/151 • Faints: {2} • RNG Seed: {3} • !! SUBSET ACHIEVEMENTS ONLY !! •",
     rich_presence_lookup("MapID", MapID, RPMapID),
     rich_presence_value("Dex", PokedexCount()),
+    rich_presence_value("Faints", FaintsCount()),
     rich_presence_value("Seed", RNGSeed)
 )
 
 rich_presence_conditional_display(DebugProtect() && ChallengeOak(),
-    "• Challenger Oak is in {0} • Pokédex: {1}/151 • RNG Seed: {2} • !! SUBSET ACHIEVEMENTS ONLY !! •",
+    "• Challenger Oak is in {0} • Pokédex: {1}/151 • Faints: {2} • RNG Seed: {3} • !! SUBSET ACHIEVEMENTS ONLY !! •",
     rich_presence_lookup("MapID", MapID, RPMapID),
     rich_presence_value("Dex", PokedexCount()),
+    rich_presence_value("Faints", FaintsCount()),
     rich_presence_value("Seed", RNGSeed)
 )
 
 rich_presence_conditional_display(DebugProtect() && ChallengeBill(),
-    "• Challenger Bill is in {0} • Pokédex: {1}/151 • RNG Seed: {2} • !! SUBSET ACHIEVEMENTS ONLY !! •",
+    "• Challenger Bill is in {0} • Pokédex: {1}/151 • Faints: {2} • RNG Seed: {3} • !! SUBSET ACHIEVEMENTS ONLY !! •",
     rich_presence_lookup("MapID", MapID, RPMapID),
     rich_presence_value("Dex", PokedexCount()),
+    rich_presence_value("Faints", FaintsCount()),
     rich_presence_value("Seed", RNGSeed)
 )
 
 rich_presence_conditional_display(DebugProtect() && ChallengeBrock(),
-    "• Challenger Brock is in {0} • Pokédex: {1}/151 • RNG Seed: {2} • !! SUBSET ACHIEVEMENTS ONLY !! •",
+    "• Challenger Brock is in {0} • Pokédex: {1}/151 • Faints: {2} • RNG Seed: {3} • !! SUBSET ACHIEVEMENTS ONLY !! •",
     rich_presence_lookup("MapID", MapID, RPMapID),
     rich_presence_value("Dex", PokedexCount()),
+    rich_presence_value("Faints", FaintsCount()),
     rich_presence_value("Seed", RNGSeed)
 )
 
 rich_presence_conditional_display(DebugProtect() && ChallengeMisty(),
-    "• Challenger Misty is in {0} • Pokédex: {1}/151 • RNG Seed: {2} • !! SUBSET ACHIEVEMENTS ONLY !! •",
+    "• Challenger Misty is in {0} • Pokédex: {1}/151 • Faints: {2} • RNG Seed: {3} • !! SUBSET ACHIEVEMENTS ONLY !! •",
     rich_presence_lookup("MapID", MapID, RPMapID),
     rich_presence_value("Dex", PokedexCount()),
+    rich_presence_value("Faints", FaintsCount()),
     rich_presence_value("Seed", RNGSeed)
 )
 
 rich_presence_conditional_display(DebugProtect() && ChallengeSurge(),
-    "• Challenger Surge is in {0} • Pokédex: {1}/151 • RNG Seed: {2} • !! SUBSET ACHIEVEMENTS ONLY !! •",
+    "• Challenger Surge is in {0} • Pokédex: {1}/151 • Faints: {2} • RNG Seed: {3} • !! SUBSET ACHIEVEMENTS ONLY !! •",
     rich_presence_lookup("MapID", MapID, RPMapID),
     rich_presence_value("Dex", PokedexCount()),
+    rich_presence_value("Faints", FaintsCount()),
     rich_presence_value("Seed", RNGSeed)
 )
 
 rich_presence_conditional_display(DebugProtect() && ChallengeErika(),
-    "• Challenger Erika is in {0} • Pokédex: {1}/151 • RNG Seed: {2} • !! SUBSET ACHIEVEMENTS ONLY !! •",
+    "• Challenger Erika is in {0} • Pokédex: {1}/151 • Faints: {2} • RNG Seed: {3} • !! SUBSET ACHIEVEMENTS ONLY !! •",
     rich_presence_lookup("MapID", MapID, RPMapID),
     rich_presence_value("Dex", PokedexCount()),
+    rich_presence_value("Faints", FaintsCount()),
     rich_presence_value("Seed", RNGSeed)
 )
 
 rich_presence_conditional_display(DebugProtect() && ChallengeKoga(),
-    "• Challenger Koga is in {0} • Pokédex: {1}/151 • RNG Seed: {2} • !! SUBSET ACHIEVEMENTS ONLY !! •",
+    "• Challenger Koga is in {0} • Pokédex: {1}/151 • Faints: {2} • RNG Seed: {3} • !! SUBSET ACHIEVEMENTS ONLY !! •",
     rich_presence_lookup("MapID", MapID, RPMapID),
     rich_presence_value("Dex", PokedexCount()),
+    rich_presence_value("Faints", FaintsCount()),
     rich_presence_value("Seed", RNGSeed)
 )
 
 rich_presence_conditional_display(DebugProtect() && ChallengeSabrina(),
-    "• Challenger Sabrina is in {0} • Pokédex: {1}/151 • RNG Seed: {2} • !! SUBSET ACHIEVEMENTS ONLY !! •",
+    "• Challenger Sabrina is in {0} • Pokédex: {1}/151 • Faints: {2} • RNG Seed: {3} • !! SUBSET ACHIEVEMENTS ONLY !! •",
     rich_presence_lookup("MapID", MapID, RPMapID),
     rich_presence_value("Dex", PokedexCount()),
+    rich_presence_value("Faints", FaintsCount()),
     rich_presence_value("Seed", RNGSeed)
 )
 
 rich_presence_conditional_display(DebugProtect() && ChallengeBlaine(),
-    "• Challenger Blaine is in {0} • Pokédex: {1}/151 • RNG Seed: {2} • !! SUBSET ACHIEVEMENTS ONLY !! •",
+    "• Challenger Blaine is in {0} • Pokédex: {1}/151 • Faints: {2} • RNG Seed: {3} • !! SUBSET ACHIEVEMENTS ONLY !! •",
     rich_presence_lookup("MapID", MapID, RPMapID),
     rich_presence_value("Dex", PokedexCount()),
+    rich_presence_value("Faints", FaintsCount()),
     rich_presence_value("Seed", RNGSeed)
 )
 
 rich_presence_conditional_display(DebugProtect() && ChallengeGiovanni(),
-    "• Challenger Giovanni is in {0} • Pokédex: {1}/151 • RNG Seed: {2} • !! SUBSET ACHIEVEMENTS ONLY !! •",
+    "• Challenger Giovanni is in {0} • Pokédex: {1}/151 • Faints: {2} • RNG Seed: {3} • !! SUBSET ACHIEVEMENTS ONLY !! •",
     rich_presence_lookup("MapID", MapID, RPMapID),
     rich_presence_value("Dex", PokedexCount()),
+    rich_presence_value("Faints", FaintsCount()),
     rich_presence_value("Seed", RNGSeed)
 )
 
 rich_presence_conditional_display(DebugProtect() && ChallengeLorelei(),
-    "• Challenger Lorelei is in {0} • Pokédex: {1}/151 • RNG Seed: {2} • !! SUBSET ACHIEVEMENTS ONLY !! •",
+    "• Challenger Lorelei is in {0} • Pokédex: {1}/151 • Faints: {2} • RNG Seed: {3} • !! SUBSET ACHIEVEMENTS ONLY !! •",
     rich_presence_lookup("MapID", MapID, RPMapID),
     rich_presence_value("Dex", PokedexCount()),
+    rich_presence_value("Faints", FaintsCount()),
     rich_presence_value("Seed", RNGSeed)
 )
 
 rich_presence_conditional_display(DebugProtect() && ChallengeBruno(),
-    "• Challenger Bruno is in {0} • Pokédex: {1}/151 • RNG Seed: {2} • !! SUBSET ACHIEVEMENTS ONLY !! •",
+    "• Challenger Bruno is in {0} • Pokédex: {1}/151 • Faints: {2} • RNG Seed: {3} • !! SUBSET ACHIEVEMENTS ONLY !! •",
     rich_presence_lookup("MapID", MapID, RPMapID),
     rich_presence_value("Dex", PokedexCount()),
+    rich_presence_value("Faints", FaintsCount()),
     rich_presence_value("Seed", RNGSeed)
 )
 
 rich_presence_conditional_display(DebugProtect() && ChallengeAgatha(),
-    "• Challenger Agatha is in {0} • Pokédex: {1}/151 • RNG Seed: {2} • !! SUBSET ACHIEVEMENTS ONLY !! •",
+    "• Challenger Agatha is in {0} • Pokédex: {1}/151 • Faints: {2} • RNG Seed: {3} • !! SUBSET ACHIEVEMENTS ONLY !! •",
     rich_presence_lookup("MapID", MapID, RPMapID),
     rich_presence_value("Dex", PokedexCount()),
+    rich_presence_value("Faints", FaintsCount()),
     rich_presence_value("Seed", RNGSeed)
 )
 
 rich_presence_conditional_display(DebugProtect() && ChallengeLance(),
-    "• Challenger Lance is in {0} • Pokédex: {1}/151 • RNG Seed: {2} • !! SUBSET ACHIEVEMENTS ONLY !! •",
+    "• Challenger Lance is in {0} • Pokédex: {1}/151 • Faints: {2} • RNG Seed: {3} • !! SUBSET ACHIEVEMENTS ONLY !! •",
     rich_presence_lookup("MapID", MapID, RPMapID),
     rich_presence_value("Dex", PokedexCount()),
+    rich_presence_value("Faints", FaintsCount()),
     rich_presence_value("Seed", RNGSeed)
 )
 
 rich_presence_conditional_display(DebugProtect() && ChallengeVesly() && LunaticDifficulty == 1,
-    "• Almighty Challenger Vesly is in {0} • Pokédex: {1}/151 • RNG Seed: {2} • !! SUBSET ACHIEVEMENTS ONLY !! • Lunatic •",
+    "• Almighty Challenger Vesly is in {0} • Pokédex: {1}/151 • Faints: {2} • RNG Seed: {3} • !! SUBSET ACHIEVEMENTS ONLY !! • Lunatic •",
     rich_presence_lookup("MapID", MapID, RPMapID),
     rich_presence_value("Dex", PokedexCount()),
+    rich_presence_value("Faints", FaintsCount()),
     rich_presence_value("Seed", RNGSeed)
 )
 
 rich_presence_conditional_display(DebugProtect() && ChallengeVesly(),
-    "• Challenger Vesly is in {0} • Pokédex: {1}/151 • RNG Seed: {2} • !! SUBSET ACHIEVEMENTS ONLY !! •",
+    "• Challenger Vesly is in {0} • Pokédex: {1}/151 • Faints: {2} • RNG Seed: {3} • !! SUBSET ACHIEVEMENTS ONLY !! •",
     rich_presence_lookup("MapID", MapID, RPMapID),
     rich_presence_value("Dex", PokedexCount()),
+    rich_presence_value("Faints", FaintsCount()),
     rich_presence_value("Seed", RNGSeed)
 )
 
 rich_presence_conditional_display(DebugProtect() && ChallengeLittleCup(),
-    "• Little Cup Challenge in {0} • Pokédex: {1}/151 • RNG Seed: {2} • !! SUBSET ACHIEVEMENTS ONLY !! •",
+    "• Little Cup Challenge in {0} • Pokédex: {1}/151 • Faints: {2} • RNG Seed: {3} • !! SUBSET ACHIEVEMENTS ONLY !! •",
     rich_presence_lookup("MapID", MapID, RPMapID),
     rich_presence_value("Dex", PokedexCount()),
+    rich_presence_value("Faints", FaintsCount()),
     rich_presence_value("Seed", RNGSeed)
 )
 
 rich_presence_conditional_display(DebugProtect() && ChallengeFullChaos(),
-    "• Full Chaos Challenge in {0} • Pokédex: {1}/151 • RNG Seed: {2} • !! SUBSET ACHIEVEMENTS ONLY !! •",
+    "• Full Chaos Challenge in {0} • Pokédex: {1}/151 • Faints: {2} • RNG Seed: {3} • !! SUBSET ACHIEVEMENTS ONLY !! •",
     rich_presence_lookup("MapID", MapID, RPMapID),
     rich_presence_value("Dex", PokedexCount()),
+    rich_presence_value("Faints", FaintsCount()),
     rich_presence_value("Seed", RNGSeed)
 )
 
