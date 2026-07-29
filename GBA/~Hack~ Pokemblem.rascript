@@ -154,6 +154,10 @@ GrowthRando = bit4(0x5265)
 BossRando = bit5(0x5265)
 TrainerRando = bit6(0x5265)
 MoveRando = bit7(0x5265)
+NoExpFlag = bit4(0x5261) // flag 0xF1
+NuzlockeFlag = bit3(0x5262) // flag 0xF8
+PlusFlag = bit4(0x5262) // flag 0xF9
+CheaterFlag = bit5(0x5262) // flag 0xFA
 
 /// Prog Flags
 BoulderBadgeFlag = bit7(0x5254)
@@ -213,7 +217,7 @@ MewTruck = bit0(0x525e)
 //function DebugProtect() => BoulderBadgeFlag != 2 // this was for testing purposes 
 function LoadCheck() => MapID == prev(MapID) && MusicID != 0
 function DebugProtect() => DebuggerFlag == 1 && CheatFlagSave1 != 1 && CheatFlagSave2 != 1 && CheatFlagSave3 != 1 
-function NoRandoNoChallengeRun() => WildPkmnRando == 0 && CantCapture == 0 && CantEvolve == 0 && SkillRando == 0 && StatRando == 0 && ItemRando == 0 && GrowthRando == 0 && BossRando == 0 && TrainerRando == 0 && MoveRando == 0 && CharName1 != 0x006b614f && (CharName1 != 0x6c736556 && CharName2 != 0x00000079)
+function NoRandoNoChallengeRun() => WildPkmnRando == 0 && CantCapture == 0 && CantEvolve == 0 && SkillRando == 0 && StatRando == 0 && ItemRando == 0 && GrowthRando == 0 && BossRando == 0 && TrainerRando == 0 && MoveRando == 0 && NoExpFlag == 0 && NuzlockeFlag == 0 && PlusFlag == 0 && CheaterFlag == 0 && CharName1 != 0x006b614f && (CharName1 != 0x6c736556 && CharName2 != 0x00000079)
 function PokedexCount() => bitcount(0x47708) - bit0(0x47708) + bitcount(0x47709) + bit0(0x4770a) + bit1(0x4770a) + bit2(0x4770a) + bit7(0x4770a) + bitcount(0x4770b) + bitcount(0x4770c) + bitcount(0x4770d) + bitcount(0x4770e) - bit4(0x4770e) + bitcount(0x4770f) + bitcount(0x47710) + bitcount(0x47711) + bitcount(0x47712) - bit1(0x47712) + bitcount(0x47713) - bit7(0x47713) + bitcount(0x47718) + bitcount(0x47719) + bitcount(0x4771a) + bitcount(0x4771b) + bitcount(0x4771c) + bitcount(0x4771d) + bitcount(0x4771e) + bitcount(0x4771f) - bit7(0x4771f)
 function FaintsCount() => ((FaintsCounter+1) & 0xFFFF)
 function PokedexCheck(target) => PokedexCount() == target
@@ -838,8 +842,11 @@ function PokedexCheck(target) => PokedexCount() == target
 /// SUBSET
 function ChallengeAsh() => CharName1 == 0x00687341  && CharName2 == 0x00
 function ChallengeGary() => CharName1 == 0x79726147  && CharName2 == 0x00
+function ChallengeLeaf() => CharName1 == 0x6661654c  && CharName2 == 0x00
 function ChallengeOak() => CharName1 == 0x006b614f  && CharName2 == 0x00
 function ChallengeBill() => CharName1 == 0x6c6c6942  && CharName2 == 0x00
+function ChallengeJames() => CharName1 == 0x656d614a  && CharName2 == 0x00000073
+function ChallengeJessie() => CharName1 == 0x7373654a  && CharName2 == 0x00006569
 function ChallengeBrock() => CharName1 == 0x636f7242  && CharName2 == 0x0000006b
 function ChallengeMisty() => CharName1 == 0x7473694d  && CharName2 == 0x00000079
 function ChallengeSurge() => CharName1 == 0x202e744c  && CharName2 == 0x67727553
@@ -854,7 +861,11 @@ function ChallengeAgatha() => CharName1 == 0x74616741  && CharName2 == 0x0000616
 function ChallengeLance() => CharName1 == 0x636e614c  && CharName2 == 0x00000065
 function ChallengeVesly() => CharName1 == 0x6c736556  && CharName2 == 0x00000079 && CantEvolve == 1 && CantCapture == 1
 function ChallengeLittleCup() => CantEvolve == 1 && CantCapture == 0
-function ChallengeFullChaos() => WildPkmnRando == 1 && SkillRando == 1 && StatRando == 1 && ItemRando == 1 && GrowthRando == 1 && BossRando == 1 && TrainerRando == 1 && MoveRando == 1
+function ChallengeVoid() => NoExpFlag == 1
+function ChallengeChaos() => WildPkmnRando == 1 && SkillRando == 1 && StatRando == 1 && ItemRando == 1 && GrowthRando == 1 && BossRando == 1 && TrainerRando == 1 && MoveRando == 1
+function ChallengePlus() => PlusFlag == 1
+function ChallengeNuzlocke() => NuzlockeFlag == 1
+function ChallengeCheater() => CheaterFlag == 1
 
 
 // ---- Rich Presence Display ----
@@ -908,6 +919,14 @@ rich_presence_conditional_display(DebugProtect() && ChallengeGary(),
     rich_presence_value("Seed", RNGSeed)
 )
 
+rich_presence_conditional_display(DebugProtect() && ChallengeLeaf(),
+    "• Challenger Leaf is in {0} • Pokédex: {1}/151 • Faints: {2} • RNG Seed: {3} • !! SUBSET ACHIEVEMENTS ONLY !! •",
+    rich_presence_lookup("MapID", MapID, RPMapID),
+    rich_presence_value("Dex", PokedexCount()),
+    rich_presence_value("Faints", FaintsCount()),
+    rich_presence_value("Seed", RNGSeed)
+)
+
 rich_presence_conditional_display(DebugProtect() && ChallengeOak(),
     "• Challenger Oak is in {0} • Pokédex: {1}/151 • Faints: {2} • RNG Seed: {3} • !! SUBSET ACHIEVEMENTS ONLY !! •",
     rich_presence_lookup("MapID", MapID, RPMapID),
@@ -918,6 +937,22 @@ rich_presence_conditional_display(DebugProtect() && ChallengeOak(),
 
 rich_presence_conditional_display(DebugProtect() && ChallengeBill(),
     "• Challenger Bill is in {0} • Pokédex: {1}/151 • Faints: {2} • RNG Seed: {3} • !! SUBSET ACHIEVEMENTS ONLY !! •",
+    rich_presence_lookup("MapID", MapID, RPMapID),
+    rich_presence_value("Dex", PokedexCount()),
+    rich_presence_value("Faints", FaintsCount()),
+    rich_presence_value("Seed", RNGSeed)
+)
+
+rich_presence_conditional_display(DebugProtect() && ChallengeJames(),
+    "• Challenger James is in {0} • Pokédex: {1}/151 • Faints: {2} • RNG Seed: {3} • !! SUBSET ACHIEVEMENTS ONLY !! •",
+    rich_presence_lookup("MapID", MapID, RPMapID),
+    rich_presence_value("Dex", PokedexCount()),
+    rich_presence_value("Faints", FaintsCount()),
+    rich_presence_value("Seed", RNGSeed)
+)
+
+rich_presence_conditional_display(DebugProtect() && ChallengeJessie(),
+    "• Challenger Jessie is in {0} • Pokédex: {1}/151 • Faints: {2} • RNG Seed: {3} • !! SUBSET ACHIEVEMENTS ONLY !! •",
     rich_presence_lookup("MapID", MapID, RPMapID),
     rich_presence_value("Dex", PokedexCount()),
     rich_presence_value("Faints", FaintsCount()),
@@ -1044,8 +1079,40 @@ rich_presence_conditional_display(DebugProtect() && ChallengeLittleCup(),
     rich_presence_value("Seed", RNGSeed)
 )
 
-rich_presence_conditional_display(DebugProtect() && ChallengeFullChaos(),
+rich_presence_conditional_display(DebugProtect() && ChallengeVoid(),
+    "• Void Exp Challenge in {0} • Pokédex: {1}/151 • Faints: {2} • RNG Seed: {3} • !! SUBSET ACHIEVEMENTS ONLY !! •",
+    rich_presence_lookup("MapID", MapID, RPMapID),
+    rich_presence_value("Dex", PokedexCount()),
+    rich_presence_value("Faints", FaintsCount()),
+    rich_presence_value("Seed", RNGSeed)
+)
+
+rich_presence_conditional_display(DebugProtect() && ChallengeChaos(),
     "• Full Chaos Challenge in {0} • Pokédex: {1}/151 • Faints: {2} • RNG Seed: {3} • !! SUBSET ACHIEVEMENTS ONLY !! •",
+    rich_presence_lookup("MapID", MapID, RPMapID),
+    rich_presence_value("Dex", PokedexCount()),
+    rich_presence_value("Faints", FaintsCount()),
+    rich_presence_value("Seed", RNGSeed)
+)
+
+rich_presence_conditional_display(DebugProtect() && ChallengePlus(),
+    "• Lunatic Plus Challenge in {0} • Pokédex: {1}/151 • Faints: {2} • RNG Seed: {3} • !! SUBSET ACHIEVEMENTS ONLY !! •",
+    rich_presence_lookup("MapID", MapID, RPMapID),
+    rich_presence_value("Dex", PokedexCount()),
+    rich_presence_value("Faints", FaintsCount()),
+    rich_presence_value("Seed", RNGSeed)
+)
+
+rich_presence_conditional_display(DebugProtect() && ChallengeNuzlocke(),
+    "• Nuzlocke Challenge in {0} • Pokédex: {1}/151 • Faints: {2} • RNG Seed: {3} • !! SUBSET ACHIEVEMENTS ONLY !! •",
+    rich_presence_lookup("MapID", MapID, RPMapID),
+    rich_presence_value("Dex", PokedexCount()),
+    rich_presence_value("Faints", FaintsCount()),
+    rich_presence_value("Seed", RNGSeed)
+)
+
+rich_presence_conditional_display(DebugProtect() && ChallengeCheater(),
+    "• A cheater is in {0} • Pokédex: {1}/151 • Faints: {2} • RNG Seed: {3} • !! SUBSET ACHIEVEMENTS ONLY !! •",
     rich_presence_lookup("MapID", MapID, RPMapID),
     rich_presence_value("Dex", PokedexCount()),
     rich_presence_value("Faints", FaintsCount()),

@@ -140,6 +140,10 @@ GrowthRando = bit4(0x5265)
 BossRando = bit5(0x5265)
 TrainerRando = bit6(0x5265)
 MoveRando = bit7(0x5265)
+NoExpFlag = bit4(0x5261) // flag 0xF1
+NuzlockeFlag = bit3(0x5262) // flag 0xF8
+PlusFlag = bit4(0x5262) // flag 0xF9
+CheaterFlag = bit5(0x5262) // flag 0xFA
 
 /// Prog Flags
 BoulderBadgeFlag = bit7(0x5254)
@@ -182,14 +186,18 @@ ZapdosFlag = bit7(0x525d)
 MewTruck = bit0(0x525e)
 
 function LoadCheck() => MapID == prev(MapID) && MusicID != 0
+//function DebugProtect() => BoulderBadgeFlag != 2 // this was for testing purposes 
 function DebugProtect() => DebuggerFlag == 1 && CheatFlagSave1 != 1 && CheatFlagSave2 != 1 && CheatFlagSave3 != 1 
 
 
 /// SUBSET
 function ChallengeAsh() => CharName1 == 0x00687341  && CharName2 == 0x00
 function ChallengeGary() => CharName1 == 0x79726147  && CharName2 == 0x00
+function ChallengeLeaf() => CharName1 == 0x6661654c  && CharName2 == 0x00
 function ChallengeOak() => CharName1 == 0x006b614f  && CharName2 == 0x00
 function ChallengeBill() => CharName1 == 0x6c6c6942  && CharName2 == 0x00
+function ChallengeJames() => CharName1 == 0x656d614a  && CharName2 == 0x00000073
+function ChallengeJessie() => CharName1 == 0x7373654a  && CharName2 == 0x00006569
 function ChallengeBrock() => CharName1 == 0x636f7242  && CharName2 == 0x0000006b
 function ChallengeMisty() => CharName1 == 0x7473694d  && CharName2 == 0x00000079
 function ChallengeSurge() => CharName1 == 0x202e744c  && CharName2 == 0x67727553
@@ -204,7 +212,11 @@ function ChallengeAgatha() => CharName1 == 0x74616741  && CharName2 == 0x0000616
 function ChallengeLance() => CharName1 == 0x636e614c  && CharName2 == 0x00000065
 function ChallengeVesly() => CharName1 == 0x6c736556  && CharName2 == 0x00000079 && CantEvolve == 1 && CantCapture == 1
 function ChallengeLittleCup() => CantEvolve == 1 && CantCapture == 0
+function ChallengeVoid() => NoExpFlag == 1
 function ChallengeFullChaos() => WildPkmnRando == 1 && SkillRando == 1 && StatRando == 1 && ItemRando == 1 && GrowthRando == 1 && BossRando == 1 && TrainerRando == 1 && MoveRando == 1
+function ChallengePlus() => PlusFlag == 1
+function ChallengeNuzlocke() => NuzlockeFlag == 1
+function ChallengeCheater() => CheaterFlag == 1
 
 
 badges = [
@@ -219,10 +231,18 @@ badges = [
 ]
 
 challengers = [
+    ["LittleCup", ChallengeLittleCup()],
+    ["Void",      ChallengeVoid()],
+    ["Chaos",     ChallengeFullChaos()],
+    ["Plus",      ChallengePlus()],
+    ["Nuzlocke",  ChallengeNuzlocke()],
     ["Ash",       ChallengeAsh()],
     ["Gary",      ChallengeGary()],
+    ["Leaf",      ChallengeLeaf()],
     ["Oak",       ChallengeOak()],
     ["Bill",      ChallengeBill()],
+    ["James",     ChallengeJames()],
+    ["Jessie",    ChallengeJessie()],
     ["Brock",     ChallengeBrock()],
     ["Misty",     ChallengeMisty()],
     ["Surge",     ChallengeSurge()],
@@ -236,8 +256,7 @@ challengers = [
     ["Agatha",    ChallengeAgatha()],
     ["Lance",     ChallengeLance()],
     ["Vesly",     ChallengeVesly()],
-    ["LittleCup", ChallengeLittleCup()],
-    ["FullChaos", ChallengeFullChaos()],
+    ["Cheater",   ChallengeCheater()],
 ]
 
 for challenger in challengers {
