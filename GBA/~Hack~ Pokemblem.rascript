@@ -163,12 +163,27 @@ SoulBadgeFlag = bit0(0x5257)
 MarshBadgeFlag = bit7(0x5259)
 VolcanoBadgeFlag = bit5(0x525c)
 EarthBadgeFlag =  bit3(0x525d)
-
 LoreleiFlag = bit1(0x525e)
 BrunoFlag = bit2(0x525e)
 AgathaFlag = bit3(0x525e)
 LanceFlag = bit4(0x525e)
 GaryCheatFlag = bit6(0x525e) // WinCon
+
+PewterGymRematchedFlag = bit7(0x5267) // flag 0x124
+CeruleanGymRematchedFlag = bit6(0x5267) // flag 0x123
+VermilionGymRematchedFlag = bit5(0x5267) // flag 0x122
+FuschiaGymRematchedFlag = bit4(0x5267) // flag 0x121
+CeladonGymRematchedFlag = bit3(0x5267) // flag 0x120
+SaffronGymRematchedFlag = bit2(0x5267) // flag 0x11F
+CinnabarGymRematchedFlag = bit1(0x5267) // flag 0x11E
+ViridianGymRematchedFlag = bit0(0x5267) // flag 0x11D
+
+
+
+
+
+
+
 
 SSAnneTicketFlag = bit5(0x5255)
 PkmnTowerClearFlag = bit4(0x5256)
@@ -194,6 +209,7 @@ ArticunoFlag = bit6(0x525d)
 ZapdosFlag = bit7(0x525d)
 MewTruck = bit0(0x525e)
 
+//function DebugProtect() => BoulderBadgeFlag != 2 // this was for testing purposes 
 function LoadCheck() => MapID == prev(MapID) && MusicID != 0
 function DebugProtect() => DebuggerFlag == 1 && CheatFlagSave1 != 1 && CheatFlagSave2 != 1 && CheatFlagSave3 != 1 
 function NoRandoNoChallengeRun() => WildPkmnRando == 0 && CantCapture == 0 && CantEvolve == 0 && SkillRando == 0 && StatRando == 0 && ItemRando == 0 && GrowthRando == 0 && BossRando == 0 && TrainerRando == 0 && MoveRando == 0 && CharName1 != 0x006b614f && (CharName1 != 0x6c736556 && CharName2 != 0x00000079)
@@ -536,8 +552,8 @@ function PokedexCheck(target) => PokedexCount() == target
                        && LoadCheck()
                        && DebugProtect()
                        && NoRandoNoChallengeRun()
-                       && ascii_string_equals(0x0326b6, "Every town")
-                       && byte(0x0326b6) != prev(byte(0x0326b6))
+                       && PewterGymRematchedFlag == 1
+                       && prev(PewterGymRematchedFlag) == 0
                        
 )     
 
@@ -548,8 +564,8 @@ function PokedexCheck(target) => PokedexCount() == target
                        && LoadCheck()
                        && DebugProtect()
                        && NoRandoNoChallengeRun()
-                       && ascii_string_equals(0x0326b5, "Hey, did you hear")
-                       && byte(0x0326b5) != prev(byte(0x0326b5))
+                       && CeruleanGymRematchedFlag == 1
+                       && prev(CeruleanGymRematchedFlag) == 0
                        
 )     
 
@@ -560,8 +576,8 @@ function PokedexCheck(target) => PokedexCount() == target
                        && LoadCheck()
                        && DebugProtect()
                        && NoRandoNoChallengeRun()
-                       && ascii_string_equals(0x0326b5, "Where'd you train")
-                       && byte(0x0326b5) != prev(byte(0x0326b5))
+                       && VermilionGymRematchedFlag == 1
+                       && prev(VermilionGymRematchedFlag) == 0
                        
 )     
 
@@ -572,8 +588,8 @@ function PokedexCheck(target) => PokedexCount() == target
                        && LoadCheck()
                        && DebugProtect()
                        && NoRandoNoChallengeRun()
-                       && ascii_string_equals(0x0326b5, "The shadows")
-                       && byte(0x0326b5) != prev(byte(0x0326b5))
+                       && FuschiaGymRematchedFlag == 1
+                       && prev(FuschiaGymRematchedFlag) == 0
                        
 )     
 
@@ -584,8 +600,8 @@ function PokedexCheck(target) => PokedexCount() == target
                        && LoadCheck()
                        && DebugProtect()
                        && NoRandoNoChallengeRun()
-                       && ascii_string_equals(0x0326b6, "Nobody")
-                       && byte(0x0326b6) != prev(byte(0x0326b6))
+                       && CeladonGymRematchedFlag == 1
+                       && prev(CeladonGymRematchedFlag) == 0
                        
 )     
 
@@ -596,8 +612,8 @@ function PokedexCheck(target) => PokedexCount() == target
                        && LoadCheck()
                        && DebugProtect()
                        && NoRandoNoChallengeRun()
-                       && ascii_string_equals(0x0326b5, "I envy you")
-                       && byte(0x0326b5) != prev(byte(0x0326b5))
+                       && SaffronGymRematchedFlag == 1
+                       && prev(SaffronGymRematchedFlag) == 0
                        
 )   
 
@@ -608,8 +624,8 @@ function PokedexCheck(target) => PokedexCount() == target
                        && LoadCheck()
                        && DebugProtect()
                        && NoRandoNoChallengeRun()
-                       && ascii_string_equals(0x0326b5, "I've put")
-                       && byte(0x0326b5) != prev(byte(0x0326b5))
+                       && CinnabarGymRematchedFlag == 1
+                       && prev(CinnabarGymRematchedFlag) == 0
                        
 )   
 
@@ -620,8 +636,8 @@ function PokedexCheck(target) => PokedexCount() == target
                        && LoadCheck()
                        && DebugProtect()
                        && NoRandoNoChallengeRun()
-                       && ascii_string_equals(0x0326b5, "Tcch")
-                       && byte(0x0326b5) != prev(byte(0x0326b5))
+                       && ViridianGymRematchedFlag == 1
+                       && prev(ViridianGymRematchedFlag) == 0
                        
 )   
 
